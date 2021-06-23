@@ -3,7 +3,7 @@ module.exports = {
     cordova.exec(successCallback, errorCallback, 'SpeechRecognition', 'isRecognitionAvailable', []);
   },
   startListening: function(successCallback, errorCallback, options) {
-    options = options || {};
+    options = { language: 'en-GB', showPopup: false, showPartial: true };
     cordova.exec(successCallback, errorCallback, 'SpeechRecognition', 'startListening', [ options.language, options.matches, options.prompt, options.showPartial, options.showPopup ]);
   },
   stopListening: function(successCallback, errorCallback) {
