@@ -47,6 +47,12 @@
         [self.commandDelegate sendPluginResult:pluginResult callbackId:command.callbackId];
         return;
     }
+  
+    // NSLog(@"startListening() endAudio");
+    // [self.recognitionRequest endAudio];
+
+    // [self.audioEngine stop];
+    // [self.recognitionTask cancel];
 
     NSLog(@"startListening()");
 
@@ -87,6 +93,11 @@
 
         self.recognitionRequest = [[SFSpeechAudioBufferRecognitionRequest alloc] init];
         self.recognitionRequest.shouldReportPartialResults = showPartial;
+      
+        // Keep speech recognition data on device
+        if (@available(iOS 13, *)) {
+            self.recognitionRequest.requiresOnDeviceRecognition = true;
+        }
 
         AVAudioInputNode *inputNode = self.audioEngine.inputNode;
         AVAudioFormat *format = [inputNode outputFormatForBus:0];
@@ -157,17 +168,32 @@
 - (void)stopListening:(CDVInvokedUrlCommand*)command {
     [self.commandDelegate runInBackground:^{
         NSLog(@"stopListening()");
+      
+        // NSLog(@"stopListening() finish");
+        // [self.recognitionTask finish];
+        // NSLog(@"stopListening() cleared task and request");
+        // self.recognitionTask = nil;
 
-       if ( self.audioEngine.isRunning ) {
+        // [self.recognitionRequest endAudio];
+        // [self.audioEngine stop];
+        // [self.audioEngine.inputNode removeTapOnBus:0];
+        // [self.audioEngine.inputNode reset];
+
+        if ( self.audioEngine.isRunning ) {
+            NSLog(@"stopListening() finish");
+            [self.recognitionTask finish];
+            NSLog(@"stopListening() cleared task and request");
+
+            self.recognitionTask = nil;
             [self.audioEngine.inputNode removeTapOnBus:0];
             [self.audioEngine.inputNode reset];
             [self.audioEngine stop];
             [self.recognitionRequest endAudio];
             // [self.recognitionTask cancel];
-            [self.recognitionTask finish];
-            self.recognitionTask = nil;
             self.recognitionRequest = nil;
+            NSLog(@"stopListening() cleared task and request");
         }
+
 
         CDVPluginResult *pluginResult = [CDVPluginResult resultWithStatus:CDVCommandStatus_OK];
         [self.commandDelegate sendPluginResult:pluginResult callbackId:command.callbackId];
