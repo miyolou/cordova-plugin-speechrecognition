@@ -4,7 +4,7 @@ module.exports = {
   },
   startListening: function(successCallback, errorCallback, options) {
     let language;
-    if (options?.language) {
+    if (options && options.language) {
       language = options.language;
     } else if (window.TTRS_LANGUAGE) {
       language = window.TTRS_LANGUAGE;
